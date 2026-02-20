@@ -15,12 +15,8 @@ jobs:
       image: registry.suse.com/bci/bci-base:latest
     defaults:
       run:
-        shell: /bin/bash
+        shell: "/bin/bash -c '{0}'"
     steps:
-      - name: Install bash
-        run: zypper --non-interactive install bash
-        shell: sh
-
       - name: Install required packages
         run: |
           zypper --non-interactive install coreutils findutils tar gzip git
