@@ -18,6 +18,7 @@ jobs:
         shell: /bin/bash
     steps:
       - name: Install required packages
+        shell: /bin/sh
         run: |
           zypper --non-interactive install bash coreutils findutils tar gzip git
           zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
