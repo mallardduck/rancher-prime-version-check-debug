@@ -14,10 +14,9 @@ jobs:
     container: registry.suse.com/bci/bci-base:latest
     defaults:
       run:
-        shell: bash
+        shell: /bin/bash -e {0}
     steps:
       - name: Install required packages
-        shell: /bin/sh -e {0}
         run: |
           zypper --non-interactive install bash coreutils findutils tar gzip git
           zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
