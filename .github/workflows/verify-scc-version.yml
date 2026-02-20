@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.suse.com/bci/bci-base:latest
-      env:
-        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     defaults:
       run:
         shell: bash
@@ -25,6 +23,28 @@ jobs:
           zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
           zypper --non-interactive --gpg-auto-import-keys refresh
           zypper --non-interactive install gh
+
+      - name: Debug GitHub plumbing
+        shell: bash
+        run: |
+          echo "GITHUB_OUTPUT=$GITHUB_OUTPUT"
+          echo "GITHUB_STEP_SUMMARY=$GITHUB_STEP_SUMMARY"
+          echo "GITHUB_PATH=$GITHUB_PATH"
+          
+          # Validate they exist
+          test -n "$GITHUB_OUTPUT" || (echo "GITHUB_OUTPUT not set" && exit 1)
+          test -n "$GITHUB_STEP_SUMMARY" || (echo "GITHUB_STEP_SUMMARY not set" && exit 1)
+          test -n "$GITHUB_PATH" || (echo "GITHUB_PATH not set" && exit 1)
+          
+          # Validate directories are writable
+          test -w "$(dirname "$GITHUB_OUTPUT")" || (echo "Cannot write to file_commands dir for GITHUB_OUTPUT" && exit 1)
+          test -w "$(dirname "$GITHUB_STEP_SUMMARY")" || (echo "Cannot write to file_commands dir for GITHUB_STEP_SUMMARY" && exit 1)
+          test -w "$(dirname "$GITHUB_PATH")" || (echo "Cannot write to file_commands dir for GITHUB_PATH" && exit 1)
+          
+          # Optional: test writing to each file
+          echo "debug-output=ok" >> "$GITHUB_OUTPUT"
+          echo "## Debug summary test" >> "$GITHUB_STEP_SUMMARY"
+          echo "/tmp/debug-path-test" >> "$GITHUB_PATH"
 
       - name: Setup Verifier
         uses: rancherlabs/scc-product-version-verifier/actions/download@main
