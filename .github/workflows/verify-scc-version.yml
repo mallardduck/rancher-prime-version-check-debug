@@ -11,10 +11,13 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    container: registry.suse.com/bci/bci-base:latest
+    container:
+      image: registry.suse.com/bci/bci-base:latest
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     defaults:
       run:
-        shell: /bin/bash -e {0}
+        shell: bash
     steps:
       - name: Install required packages
         run: |
