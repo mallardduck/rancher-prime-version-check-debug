@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
+    runs-on: ubuntu-latest
     container: registry.suse.com/bci/bci-base:latest
     steps:
       - name: Install GitHub CLI
