@@ -24,27 +24,22 @@ jobs:
           zypper --non-interactive --gpg-auto-import-keys refresh
           zypper --non-interactive install gh
 
-      - name: Debug GitHub plumbing
+      - name: Debug container environment
         shell: bash
         run: |
-          echo "GITHUB_OUTPUT=$GITHUB_OUTPUT"
-          echo "GITHUB_STEP_SUMMARY=$GITHUB_STEP_SUMMARY"
-          echo "GITHUB_PATH=$GITHUB_PATH"
-          
-          # Validate they exist
-          test -n "$GITHUB_OUTPUT" || (echo "GITHUB_OUTPUT not set" && exit 1)
-          test -n "$GITHUB_STEP_SUMMARY" || (echo "GITHUB_STEP_SUMMARY not set" && exit 1)
-          test -n "$GITHUB_PATH" || (echo "GITHUB_PATH not set" && exit 1)
-          
-          # Validate directories are writable
-          test -w "$(dirname "$GITHUB_OUTPUT")" || (echo "Cannot write to file_commands dir for GITHUB_OUTPUT" && exit 1)
-          test -w "$(dirname "$GITHUB_STEP_SUMMARY")" || (echo "Cannot write to file_commands dir for GITHUB_STEP_SUMMARY" && exit 1)
-          test -w "$(dirname "$GITHUB_PATH")" || (echo "Cannot write to file_commands dir for GITHUB_PATH" && exit 1)
-          
-          # Optional: test writing to each file
-          echo "debug-output=ok" >> "$GITHUB_OUTPUT"
-          echo "## Debug summary test" >> "$GITHUB_STEP_SUMMARY"
-          echo "/tmp/debug-path-test" >> "$GITHUB_PATH"
+          echo "User: $(id)"
+          echo "Working dir: $(pwd)"
+          echo "PATH: $PATH"
+          echo "Available shells:"
+          cat /etc/shells || true
+          echo "Environment variables:"
+          env | sort
+          echo "Temp directories:"
+          ls -la /tmp
+          echo "Workspace:"
+          ls -la $GITHUB_WORKSPACE
+          echo "File commands directory:"
+          ls -la $(dirname "$GITHUB_OUTPUT")
 
       - name: Setup Verifier
         uses: rancherlabs/scc-product-version-verifier/actions/download@main
