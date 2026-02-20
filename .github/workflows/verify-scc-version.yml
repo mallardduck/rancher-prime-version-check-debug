@@ -11,21 +11,7 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
-    container:
-      image: registry.suse.com/bci/bci-base:latest
-      options: --user 1001:1001
-    defaults:
-      run:
-        shell: "/bin/bash -c '{0}'"
     steps:
-      - name: Install required packages
-        shell: sh
-        run: |
-          zypper --non-interactive install bash coreutils findutils tar gzip git
-          zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
-          zypper --non-interactive --gpg-auto-import-keys refresh
-          zypper --non-interactive install gh
-
       - name: Setup Verifier
         uses: rancherlabs/scc-product-version-verifier/actions/download@main
 
