@@ -13,28 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: registry.suse.com/bci/bci-base:latest
+    defaults:
+      run:
+        shell: /bin/bash
     steps:
-      - name: Debug container environment
-        shell: bash
-        run: |
-          echo "User: $(id)"
-          echo "Working dir: $(pwd)"
-          echo "PATH: $PATH"
-          echo "Available shells:"
-          cat /etc/shells || true
-          echo "Environment variables:"
-          env | sort
-          echo "Temp directories:"
-          ls -la /tmp
-          echo "Workspace:"
-          ls -la $GITHUB_WORKSPACE
-          echo "File commands directory:"
-          ls -la $(dirname "$GITHUB_OUTPUT")
+      - name: Install bash
+        run: zypper --non-interactive install bash
+        shell: sh
 
       - name: Install required packages
-        shell: /bin/sh
         run: |
-          zypper --non-interactive install bash coreutils findutils tar gzip git
+          zypper --non-interactive install coreutils findutils tar gzip git
           zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
           zypper --non-interactive --gpg-auto-import-keys refresh
           zypper --non-interactive install gh
