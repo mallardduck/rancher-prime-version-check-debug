@@ -1,0 +1,41 @@
+name: SCC Product Version Verification
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  verify-version:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
+    container: registry.suse.com/bci/bci-base:latest
+    steps:
+      - name: Install GitHub CLI
+        run: |
+          zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
+          zypper --non-interactive --gpg-auto-import-keys refresh
+          zypper --non-interactive install gh
+
+      - name: Setup Verifier
+        uses: rancherlabs/scc-product-version-verifier/actions/download@main
+
+      - run: echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
+
+      - name: Verify `rancher` Product Version
+        uses: rancherlabs/scc-product-version-verifier/actions/verify@main
+        with:
+          version: ${{ github.ref }}
+          staging-code: ${{ secrets.RANCHER_SCC_STAGING_ACCOUNT }}
+          production-code: ${{ secrets.RANCHER_SCC_PRODUCTION_ACCOUNT }}
+          product-name: rancher
+
+      - name: Verify `rancher-prime` Product Version
+        uses: rancherlabs/scc-product-version-verifier/actions/verify@main
+        with:
+          version: ${{ github.ref }}
+          staging-code: ${{ secrets.RANCHER_SCC_STAGING_ACCOUNT }}
+          production-code: ${{ secrets.RANCHER_SCC_PRODUCTION_ACCOUNT }}
+          product-name: rancher-prime
