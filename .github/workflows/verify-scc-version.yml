@@ -12,6 +12,9 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     container: registry.suse.com/bci/bci-base:latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Install GitHub CLI
         run: |
