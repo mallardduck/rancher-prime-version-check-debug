@@ -39,7 +39,7 @@ jobs:
       - run: echo "${{ github.workspace }}/bin" >> $GITHUB_PATH
 
       - name: Verify `rancher` Product Version
-        uses: rancherlabs/scc-product-version-verifier/actions/verify@main
+        uses: mallardduck/scc-product-version-verifier/actions/verify@verify-action-improve
         with:
           version: ${{ github.ref }}
           staging-code: ${{ secrets.RANCHER_SCC_STAGING_ACCOUNT }}
@@ -47,7 +47,7 @@ jobs:
           product-name: rancher
 
       - name: Verify `rancher-prime` Product Version
-        uses: rancherlabs/scc-product-version-verifier/actions/verify@main
+        uses: mallardduck/scc-product-version-verifier/actions/verify@verify-action-improve
         with:
           version: ${{ github.ref }}
           staging-code: ${{ secrets.RANCHER_SCC_STAGING_ACCOUNT }}
