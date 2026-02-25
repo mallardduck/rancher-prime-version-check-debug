@@ -11,7 +11,28 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    container:
+      image: registry.suse.com/bci/bci-base:latest
+    defaults:
+      run:
+        shell: bash
     steps:
+      - name: Check GitHub Actions files
+        run: |
+          echo "GITHUB_STEP_SUMMARY: $GITHUB_STEP_SUMMARY"
+          echo "File exists: $(test -f "$GITHUB_STEP_SUMMARY" && echo "yes" || echo "no")"
+          echo "Writable: $(test -w "$GITHUB_STEP_SUMMARY" && echo "yes" || echo "no")"
+          ls -la "$GITHUB_STEP_SUMMARY" || echo "File doesn't exist"
+
+      - name: Set up PATH
+        run: echo $PATH >> $GITHUB_PATH
+      - name: Install required packages
+        run: |
+          zypper --non-interactive install coreutils findutils tar gzip git
+          zypper --non-interactive addrepo https://cli.github.com/packages/rpm/gh-cli.repo
+          zypper --non-interactive --gpg-auto-import-keys refresh
+          zypper --non-interactive install gh
+
       - name: Setup Verifier
         uses: rancherlabs/scc-product-version-verifier/actions/download@main
 
